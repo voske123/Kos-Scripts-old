@@ -40,7 +40,7 @@ else if ship:altitude > 70000 and ship:orbit:eccentricity < 0.1 {
   }
   wait until kuniverse:issettled.
 
-test.
+
 
 
 }
