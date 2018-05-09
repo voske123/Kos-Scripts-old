@@ -35,14 +35,20 @@ else if ship:altitude > 70000 and ship:orbit:eccentricity < 0.1 {
   
   set kuniverse:timewarp:warp to 4.
 
-  if vang(ship:orbit:vector, mun:body:vector) > 85 and vang(ship:orbit:vector, mun:body:vector) < 95. {
+  if vang(ship:body:position, mun:body:vector) > 85 and vang(ship:body:position, mun:body:vector) < 95. {
     cancelwarp().
   }
   wait until kuniverse:issettled.
 
+  lock steering to prograde.
 
+  until orbit:hasnextpatch {
+  lock throttle to 1.
+  }
 
+  lock throttle to 0.
 
+  print "on the way to the mun!".
 }
 
 
