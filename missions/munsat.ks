@@ -35,12 +35,9 @@ else if ship:altitude > 70000 and ship:orbit:eccentricity < 0.1 {
   
   set kuniverse:timewarp:warp to 4.
   
+  wait until vang(ship:body:position, mun:position) > 85 and vang(ship:body:position, body:position) < 95.
+  kuniverse:timewarp:cancelwarp.
   
-
-
-  until vang(ship:body:position, mun:position) > 85 and vang(ship:body:position, body:position) < 95. {
-    kuniverse:timewarp:cancelwarp.
-  }
   wait until kuniverse:timewarp:issettled.
 
   lock steering to prograde.
