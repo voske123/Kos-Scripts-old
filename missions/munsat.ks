@@ -26,7 +26,7 @@ if ship:orbit:eccentricity > 0.1 {
     clearscreen.
 
   } else if ship:altitude > 70000 and hasnode {
-    node_exec.
+    node_exec().
     clearscreen.
   }
 }
@@ -46,6 +46,8 @@ else if ship:altitude > 70000 and ship:orbit:eccentricity < 0.1 {
   lock throttle to 0.
 
   print "on the way to the mun!".
+
+
 }
 
 
