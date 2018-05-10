@@ -1,24 +1,29 @@
 // circularisation script
 clearscreen.
-
+set eta_apoapsis to eta:apoapsis.
+set eta_periapsis to eta:periapsis.
 
 function circularisation {
+  parameter at_peri is false.
+  
   if orbit:hasnextpatch {
     if ship:apoapsis < 0 {
-      set eta_apoapsis to 0.
-      set eta_periapsis to eta:periapsis.
+      set at_peri to true.
     } 
     else if ship:periapsis < 0 {
-      set eta_periapsis to 0.
-      set eta_apoapsis to eta:periapsis.
+      set at_peri to false.
     }
   }
   else {
-    set eta_apoapsis to eta:apoapsis.
-    set eta_periapsis to eta:periapsis.
+    if eta:apoapsis > eta:periapsis {
+      set at_peri to true.
+    } else {
+      set at_peri to false.
+    }
   }
+  
 
-  if eta_apoapsis > eta_periapsis {  
+  if at_peri = false {  
   
   local speed_at_apo is sqrt(ship:body:mu / (ship:body:radius + ship:orbit:apoapsis)).
 
@@ -31,7 +36,7 @@ function circularisation {
   add maneuver_node.
   
   
-  } else if eta_apoapsis < eta_periapsis {
+  } else if at_peri = true {
 
   local speed_at_peri is sqrt(ship:body:mu / (ship:body:radius + ship:orbit:periapsis)).
 

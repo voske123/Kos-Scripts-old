@@ -11,28 +11,7 @@ run circularisation.
 run node_exec.
 run launch.
 
-if ship:orbit:eccentricity > 0.1 {
-  if ship:altitude < 70000 {
-    clearscreen.
-    set ship:control:pilotmainthrottle to 0.
-    launch().
-    circularisation().
-    node_exec().
-    clearscreen.   
-
-  } else if ship:altitude > 70000 and not(hasnode)  {
-    circularisation().
-    node_exec().
-    clearscreen.
-
-  } else if ship:altitude > 70000 and hasnode {
-    node_exec().
-    clearscreen.
-  }
-}
-
-else if ship:altitude > 70000 and ship:orbit:eccentricity < 0.1 {
-  
+function mun_transfer {
   set kuniverse:timewarp:warp to 4.
   
   wait until vang(ship:body:position, mun:position) > 85 and vang(ship:body:position, body:position) < 95.
@@ -46,9 +25,37 @@ else if ship:altitude > 70000 and ship:orbit:eccentricity < 0.1 {
   lock throttle to 0.
 
   print "on the way to the mun!".
-
-
 }
+
+if ship:altitude < 500 and ship:groundspeed < 1  {
+    clearscreen.
+    set ship:control:pilotmainthrottle to 0.
+    launch().
+    circularisation().
+    node_exec().
+    clearscreen.
+    print "In orbit around Kerbin.".
+}
+
+if ship:altitude > 70000 and ship:orbit:eccentricity < 0.1 {
+  mun_transfer().
+}
+  wait 1.
+  
+  kuniverse:timewarp:warpto(time:seconds + orbit:nextpatcheta).
+  wait until kuniverse:timewarp:issettled.
+  wait until ship:body = mun.
+
+  circularisation().
+  node_exec().
+  clearscreen.
+
+  
+print "In orbit around the mun.".
+
+
+
+
 
 
 
