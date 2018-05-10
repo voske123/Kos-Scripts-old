@@ -42,7 +42,7 @@ else if ship:altitude > 70000 and ship:orbit:eccentricity < 0.1 {
 
   lock steering to prograde.
   lock throttle to 1.
-  wait until orbit:hasnextpatch 
+  wait until orbit:hasnextpatch. 
   lock throttle to 0.
 
   print "on the way to the mun!".
