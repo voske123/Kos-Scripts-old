@@ -54,5 +54,8 @@ function node_exec{
   unlock steering.
   wait 1.
 
-  remove nextnode. 
+  remove nextnode.
+  clearscreen.
+  print "Node executed.".
+   
 }

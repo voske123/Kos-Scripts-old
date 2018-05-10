@@ -55,4 +55,5 @@ function circularisation {
     lock throttle to 0.
     wait 1.
   }
+  print "Circularisation node created.".
 }
