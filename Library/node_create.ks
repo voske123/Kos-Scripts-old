@@ -1,4 +1,33 @@
-//script to create a transfer node that u can setup by just entering parameters. (apoapsis, periapsis, inclination)
+//script to create a transfer that u can setup by just entering parameters. (apoapsis, periapsis, inclination)
+
+//function burntime {
+//  parameter dv is 
+//
+//  local enginelist is LIST().
+//  list ENGINES in enginelist.
+//  local count is 0.
+//  local ispsum is 0.
+
+//  for e in enginelist {
+//    if e:IGNITION {
+//      set count to count + 1.
+//      set ispsum to ispsum + e:ISP.        
+//    }
+//  }
+
+//  local f is SHIP:AVAILABLETHRUST.    // Engine Thrust (kg * m/s²)
+//  local m is SHIP:MASS.               // Starting mass (kg)
+//  local e is CONSTANT():E.            // Base of natural log
+//  local g is 9.82.                    // Gravitational acceleration constant (m/s²)
+//  local dv is 1.                      // deltav from the .
+//  local isp is ispsum/count.          //isp average
+
+
+//  set t to (m - (m / e^(dv / (isp * g)))) / (f / (isp * g)).
+
+//  return t.
+
+//}
 
 
 function node_create {
@@ -11,20 +40,23 @@ function node_create {
   set target_inclination_control to false.
   
   
+  if target_inclination_control = false {
+      set diff_inclination to round(target_inclination - ship:orbit:inclination).
+      //calculate deltav needed for inclination change.
+      
+      //burntime().
+      
 
+    }
   if target_apoapsis_control = false {
-    set diff_apoapsis to (target_apoapsis - ship:apoapsis).
+    set diff_apoapsis to round(target_apoapsis - ship:apoapsis).
     //calculate deltav needed for apoapsis change.
   }
   if target_periapsis_control = false {
-    set diff_periapsis to (target_periapsis - ship:apoapsis).
+    set diff_periapsis to round(target_periapsis - ship:apoapsis).
     //calculate deltav needed for periapsis change.
   }
-  if target_inclination_control = false {
-    set diff_inclination to (target_inclination - ship:orbit:inclination).
-    //calculate deltav needed for inclination change.
-
-  }
+  
 
   if diff_apoapsis < 100 {
     set target_apoapsis_control to true.
@@ -38,7 +70,7 @@ function node_create {
 
 
 
-
+  print " burntime:   " + t.
   print " target apo: " + target_apoapsis.
   print " cur apo:    " + round(ship:apoapsis).
   print " dif apo:    " + diff_apoapsis.
