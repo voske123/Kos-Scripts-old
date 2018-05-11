@@ -1,5 +1,4 @@
 core:doevent ("open terminal").
-switch to 1.
 Clearscreen.
 print "boot completed.".
 wait until SHIP:UNPACKED and SHIP:LOADED.

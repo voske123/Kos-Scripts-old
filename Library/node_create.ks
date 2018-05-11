@@ -1,35 +1,5 @@
 //script to create a transfer that u can setup by just entering parameters. (apoapsis, periapsis, inclination)
 
-//function burntime {
-//  parameter dv is 
-//
-//  local enginelist is LIST().
-//  list ENGINES in enginelist.
-//  local count is 0.
-//  local ispsum is 0.
-
-//  for e in enginelist {
-//    if e:IGNITION {
-//      set count to count + 1.
-//      set ispsum to ispsum + e:ISP.        
-//    }
-//  }
-
-//  local f is SHIP:AVAILABLETHRUST.    // Engine Thrust (kg * m/s²)
-//  local m is SHIP:MASS.               // Starting mass (kg)
-//  local e is CONSTANT():E.            // Base of natural log
-//  local g is 9.82.                    // Gravitational acceleration constant (m/s²)
-//  local dv is 1.                      // deltav from the .
-//  local isp is ispsum/count.          //isp average
-
-
-//  set t to (m - (m / e^(dv / (isp * g)))) / (f / (isp * g)).
-
-//  return t.
-
-//}
-
-
 function node_create {
   parameter target_apoapsis.
   parameter target_periapsis.
@@ -38,39 +8,85 @@ function node_create {
   set target_apoapsis_control to false.
   set target_periapsis_control to false.
   set target_inclination_control to false.
+
+  lock diff_inclination to round(target_inclination - ship:orbit:inclination).
+  lock diff_apoapsis to round(target_apoapsis - ship:apoapsis).
+  lock diff_periapsis to round(target_periapsis - ship:apoapsis).
+  
+  set normal to vcrs(ship:velocity:orbit, body:position).
+  set antinormal to -vcrs(ship:velocity:orbit, body:position).
+
+  print " target apo: " + target_apoapsis                   at (0,10).
+  print " cur apo:    " + round(ship:apoapsis)              at (0,11).
+  print " dif apo:    " + diff_apoapsis                     at (0,12).
+  print " target per: " + target_periapsis                  at (0,13).
+  print " cur per:    " + round(ship:periapsis)             at (0,14).
+  print " dif per:    " + diff_periapsis                    at (0,15).
+  print " target inc: " + target_inclination                at (0,16).
+  print " cur inc:    " + round(ship:orbit:inclination)     at (0,17).
+  print " apo check:  " + target_apoapsis_control           at (0,18).
+  print " per check:  " + target_periapsis_control          at (0,19).
+  print " inc check:  " + target_inclination_control        at (0,20).
+
+
+  when diff_apoapsis < 100 then {
+    set target_apoapsis_control to true.
+  }
+  when diff_periapsis < 100 then {
+    set target_periapsis_control to true.
+  }
+  when diff_inclination < 0.1 then {
+    set target_inclination_control to true.
+  }
   
   
-  if target_inclination_control = false {
-      set diff_inclination to round(target_inclination - ship:orbit:inclination).
-      //calculate deltav needed for inclination change.
-      
-      //burntime().
+  if target_inclination_control = false {      
+      if diff_inclination > 0 {
+        lock steering to normal.
+        print "steering to normal".
+        wait until vang(normal, ship:facing:vector) < 2.
+        print " in position".
+        
+
+      } else if diff_inclination < 0 {
+        
+        lock steering to antinormal.
+        print "steering to anti-normal".
+        wait until vang(antinormal, ship:facing:vector) < 2.
+        print " in position".
+        
+        
+      }
+
+      until target_inclination_control = true {
+                lock throttle to 1.
+              } 
+      print "burn finished".
       
 
-    }
-  if target_apoapsis_control = false {
-    set diff_apoapsis to round(target_apoapsis - ship:apoapsis).
+
+      //lock throttle to 1.
+
+      
+
+      
+      lock throttle to 0.
+
+      //calculate deltav needed for inclination change.
+      
+      
+     
+   }
+  if target_apoapsis_control = false {    
     //calculate deltav needed for apoapsis change.
   }
   if target_periapsis_control = false {
-    set diff_periapsis to round(target_periapsis - ship:apoapsis).
+    
     //calculate deltav needed for periapsis change.
   }
   
 
-  if diff_apoapsis < 100 {
-    set target_apoapsis_control to true.
-  }
-  if diff_periapsis < 100 {
-    set target_periapsis_control to true.
-  }
-  if diff_inclination < 0.5 {
-    set target_inclination_control to true.
-  }
-
-
-
-  print " burntime:   " + t.
+  //print " burntime:   " + t.
   print " target apo: " + target_apoapsis.
   print " cur apo:    " + round(ship:apoapsis).
   print " dif apo:    " + diff_apoapsis.
@@ -88,7 +104,8 @@ function node_create {
 
 
   if target_apoapsis_control = true and target_inclination_control = true and target_periapsis_control = true {
-    add maneuver.
-    print "Node created and ready to be executed.".
+    wait 2.
+    clearscreen.
+    print "New orbit achieved".
   }
 }
