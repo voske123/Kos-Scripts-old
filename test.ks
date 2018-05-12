@@ -14,25 +14,32 @@ function adjust_inclination {
   lock antinormal to vcrs(ship:velocity:orbit, body:position).
 
   function print_parameters{
-    print "current inclination: " + round(current_inclination) at (0,10).
-    print "desired inclination: " + round(desired_inclination) at (0,11).
-    print "inclination check  : " + target_inclination_check   at (0,12).
+    print "current inclination: " + round(current_inclination) + "  " at (0,10).
+    print "desired inclination: " + round(desired_inclination) + "  " at (0,11).
+    print "inclination check  : " + target_inclination_check   + "  " at (0,12).
+    
   }
   
-  if desired_inclination < 180 {
-    lock steering to normal.
-    print_parameters().
-    wait until vang(normal, ship:facing:vector).
+  if target_inclination_check = false{
+    if desired_inclination < 180 {
+      lock steering to normal.
+      print_parameters().
+      wait until vang(normal, ship:facing:vector).
 
-  } else if desired_inclination > 180 {
-    lock steering to antinormal.
-    print_parameters().
-    wait until vang(antinormal, ship:facing:vector).
-  }
+    } else if desired_inclination > 180 {
+      lock steering to antinormal.
+      print_parameters().
+      wait until vang(antinormal, ship:facing:vector).
+    }
 
+    until current_inclination > desired_inclination {
+      lock throttle to 1.
+      print_parameters().
 
-  
-  if target_inclination_check = false {
+    }
+
+    lock throttle to 0.
+    set target_inclination_check to true.
     print_parameters().
   }
 
