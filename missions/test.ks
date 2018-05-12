@@ -1,7 +1,7 @@
-run node_create.
+run orbit_change.
 
-print " node_create ran".
+print " orbit_change ran".
 
-node_create(100000, 120000 , -10).
+orbit_change(100000, 120000 , 190).
 
 print "finished".
