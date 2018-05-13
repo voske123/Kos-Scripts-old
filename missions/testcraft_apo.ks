@@ -9,7 +9,7 @@ function adjust_apo {
   set retro_dir to false.
   set check_1 to false.
   set check_2 to false.
-  set current_apo to ship:apoapsis.
+  lock current_apo to ship:apoapsis.
   
   lock prog to ship:prograde.
   lock retro to ship:retrograde.
@@ -30,10 +30,7 @@ function adjust_apo {
       set check_2 to true.
       print "2 " + check_2.
       }
-    if check_1 = true and check_2 = true {
-      set apoapsis_check to true.
-      print "apoapsis_check: " + apoapsis_check + "    ".
-      } 
+    
 
     if check_2 = true {
       lock steering to retro.
@@ -60,36 +57,18 @@ function adjust_apo {
 
     until apoapsis_check = true {
       lock throttle to 1.
-      when current_apo - 100 < desired_apo then {
-        set check_1 to true.
-        print "1 " + check_1.
-      }
-      when current_apo + 100 > desired_apo then {
-        set check_2 to true.
-        print "2 " + check_2.
-      }
-      when check_1 = true and check_2 = true then {
+      print "current apo: " + ship:apoapsis at (0,10).
+      if current_apo - 100 < desired_apo and current_apo + 100 > desired_apo {
         set apoapsis_check to true.
-        print "apoapsis_check: " + apoapsis_check + "    ".
       }
+      wait 0.
+
     }
 
-    lock throttle to 0.
-  
-  
-  
+    lock throttle to 0. 
   }
-
-
-
-
-  
-
-
-
-
 
   print "apoapsis reached!".
 }
 
-adjust_apo(100000).
+adjust_apo(120000).
