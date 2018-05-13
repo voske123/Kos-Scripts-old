@@ -5,7 +5,7 @@ clearscreen.
 
 function adjust_inclination {
   
-  parameter desired_inclination is 190.
+  parameter desired_inclination is ship:orbit:inclination.
   
   lock current_inclination to ship:orbit:inclination.
   set target_inclination_check to false.
@@ -20,8 +20,7 @@ function adjust_inclination {
     print "desired inclination: " + round(desired_inclination) + "  " at (0,11).
     print "inclination check  : " + target_inclination_check   + "  " at (0,12).
     print "old inclination    : " + old_inc                    + "  " at (0,13).
-    
-    
+   
   }
   
   if target_inclination_check = false {
@@ -71,12 +70,13 @@ function adjust_inclination {
   }
 
 clearscreen.
-print "inclination burn finished with an inclination of " + current_inclination + ".".
+print_parameters().
+
 
 wait 100.
   
 
 }
 
-adjust_inclination(10).
+adjust_inclination(20).
 
