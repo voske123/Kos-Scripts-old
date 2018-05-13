@@ -1,30 +1,30 @@
-// script for adjusting apoapsis
+// script for adjusting periapsis
 
-function adjust_apo {
+function adjust_per {
   
-  parameter desired_apo is ship:apoapsis.
+  parameter desired_per is ship:periapsis.
 
-  set apoapsis_check to false.
+  set periapsis_check to false.
   set check_1 to false.
   set check_2 to false.
-  lock current_apo to ship:apoapsis.
+  lock current_per to ship:periapsis.
   
   lock prog to ship:prograde.
   lock retro to ship:retrograde.
 
-  print "desired_apo:    " + desired_apo + "     ".
-  print "current_apo:    " + current_apo + "     ".
-  print "apoapsis_check: " + apoapsis_check + "     ".
+  print "desired_per:    " + desired_per + "     ".
+  print "current_per:    " + current_per + "     ".
+  print "periapsis_check: " + periapsis_check + "     ".
 
   wait 1.
 
-  if apoapsis_check = false {
+  if periapsis_check = false {
     
-    if current_apo - 100 < desired_apo {
+    if current_per < desired_per {
       set check_1 to true.
       print "1 " + check_1.
       }
-    if current_apo + 100 > desired_apo {
+    if current_per > desired_per {
       set check_2 to true.
       print "2 " + check_2.
       }
@@ -32,7 +32,7 @@ function adjust_apo {
 
     if check_2 = true {
       lock steering to retro.
-      until time:seconds > time:seconds + (eta:periapsis -30){
+      until time:seconds > time:seconds + (eta:apoapsis -30){
         set kuniverse:timewarp:warp to 100.
       }
       kuniverse:timewarp:cancelwarp().
@@ -42,7 +42,7 @@ function adjust_apo {
 
     } else if check_1 = true {
       lock steering to prog.
-      until time:seconds > time:seconds + (eta:periapsis -30){
+      until time:seconds > time:seconds + (eta:apoapsis -30){
         set kuniverse:timewarp:warp to 100.
       }
       kuniverse:timewarp:cancelwarp(). 
@@ -51,11 +51,11 @@ function adjust_apo {
 
     }
 
-    until apoapsis_check = true {
+    until periapsis_check = true {
       lock throttle to 1.
-      print "current apo: " + ship:apoapsis at (0,10).
-      if current_apo - 100 < desired_apo and current_apo + 100 > desired_apo {
-        set apoapsis_check to true.
+      print "current apo: " + ship:periapsis at (0,10).
+      if current_per - 100 < desired_per and current_per + 100 > desired_per {
+        set periapsis_check to true.
       }
       wait 0.
 
@@ -64,7 +64,7 @@ function adjust_apo {
     lock throttle to 0. 
   }
 
-  print "apoapsis reached!".
+  print "periapsis reached!".
 }
 
-adjust_apo(120000).
+adjust_per(100000).
