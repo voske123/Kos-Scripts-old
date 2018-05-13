@@ -7,13 +7,15 @@ function adjust_per {
   set periapsis_check to false.
   set check_1 to false.
   set check_2 to false.
-  lock current_per to ship:periapsis.
+  set steering_vector to ship:facing:topvector.
   
-  lock prog to ship:prograde.
-  lock retro to ship:retrograde.
+  lock current_per to ship:periapsis.
+  lock steering to lookdirup(steering_vector, ship:facing:topvector).
+  lock prog to ship:prograde:vector.
+  lock retro to ship:retrograde:vector.
 
-  print "desired_per:    " + desired_per + "     ".
-  print "current_per:    " + current_per + "     ".
+  print "desired_per:     " + desired_per + "     ".
+  print "current_per:     " + current_per + "     ".
   print "periapsis_check: " + periapsis_check + "     ".
 
   wait 1.
@@ -31,40 +33,47 @@ function adjust_per {
     
 
     if check_2 = true {
-      lock steering to retro.
-      until time:seconds > time:seconds + (eta:apoapsis -30){
+      until time:seconds > time:seconds + (eta:apoapsis - 30){
         set kuniverse:timewarp:warp to 100.
       }
       kuniverse:timewarp:cancelwarp().
-      
-      wait until vang(ship:facing:vector, retro:vector) < 1.
+      wait until kuniverse:timewarp:issettled.
+      set steering_vector to retro.
+      wait until vang(ship:facing:vector, retro) < 1.
       print "ship ready for burn to retrograde.".
+      
 
     } else if check_1 = true {
-      lock steering to prog.
-      until time:seconds > time:seconds + (eta:apoapsis -30){
+
+      
+
+      until time:seconds > time:seconds + (eta:apoapsis - 60){
         set kuniverse:timewarp:warp to 100.
       }
-      kuniverse:timewarp:cancelwarp(). 
-      wait until vang(ship:facing:vector, prog:vector) < 1.
+      kuniverse:timewarp:cancelwarp().
+      wait until kuniverse:timewarp:issettled.
+      set steering_vector to prog. 
+      wait until vang(ship:facing:vector, prog) < 1.
       print "ship ready for burn to prograde.".
-
+      
     }
 
     until periapsis_check = true {
+      
       lock throttle to 1.
-      print "current apo: " + ship:periapsis at (0,10).
+      print "current per: " + ship:periapsis at (0,10).
       if current_per - 100 < desired_per and current_per + 100 > desired_per {
         set periapsis_check to true.
+        lock throttle to 0.
       }
       wait 0.
 
     }
 
-    lock throttle to 0. 
+   
   }
 
   print "periapsis reached!".
 }
 
-adjust_per(100000).
+adjust_per(150000).
