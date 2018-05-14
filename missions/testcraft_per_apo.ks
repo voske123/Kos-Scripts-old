@@ -216,7 +216,7 @@ function adjust_all {
   parameter desired_apo is ship:apoapsis.
   parameter desired_per is ship:periapsis.
 
-  if desired_apo > desired_per {
+  if desired_apo > ship:periapsis {
     adjust_apo(desired_apo).
     print "apoapsis reached".
     adjust_per(desired_per).
@@ -232,4 +232,4 @@ function adjust_all {
   
 }
 
-adjust_all(250000,120000).
+adjust_all(75000,72000).
