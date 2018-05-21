@@ -1,6 +1,16 @@
 // node_exec script
 clearscreen.
 
+function do_stage {
+  LIST ENGINES IN ENGlist.
+  FOR eng IN ENGlist {
+  if eng:flameout and stage:ready {
+    stage.
+    print "stage:" + stage:number at (1,10).
+    }
+  }
+}
+
 function node_exec{
 
   local enginelist is LIST().
@@ -47,6 +57,7 @@ function node_exec{
   until old_vector_mag <= nextnode:burnvector:mag {
     set old_vector_mag to nextnode:burnvector:mag.
     wait 0.
+    do_stage().
   }
       
     
