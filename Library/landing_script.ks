@@ -25,9 +25,10 @@ function speed_altitude {
 function throttle_speed {
   local my_speed is ship:velocity:surface:mag.
   local acceleration is ship:availablethrust/ship:mass.
+  local gravity is body:mu/body:position:sqrmagnitude.
   
-  set throt to (my_speed - speed_altitude())/acceleration.
-  return throt.
+  set throt to ((gravity + (my_speed - speed_altitude()))/acceleration)*1.5.
+  
 }
 
 when alt:radar < 800 then {
@@ -40,7 +41,7 @@ when alt:radar < 800 then {
 wait until vang(retrograde:vector, ship:facing:vector) < 2.
 print "in position for retrograde burn.".
 
-until ship:verticalspeed > 0 and ship:status = "SUB_ORBITAL" {
+until ship:verticalspeed > - 2 and ship:status = "SUB_ORBITAL" {
   throttle_speed().
   
   print "apoapsis:         " + ship:apoapsis + "      "  at  (0,10).
